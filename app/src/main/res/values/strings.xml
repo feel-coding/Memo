@@ -6,6 +6,6 @@
     <string name="new_picture">사진 찍어서 첨부</string>
     <string name="from_link">링크로 첨부</string>
     <string name="save">저장</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_main">MainActivity</string>
     <string name="ic_attach">사진 첨부</string>
 </resources>

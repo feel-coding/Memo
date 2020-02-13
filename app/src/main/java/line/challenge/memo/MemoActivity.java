@@ -44,24 +44,25 @@ public class MemoActivity extends AppCompatActivity {
         imageView = findViewById(R.id.image_view);
         dbHelper = new MemoDBHelper(this);
 
-        View.OnClickListener choosePictureListener = v -> { //클릭 이벤트 처리할 리스너 객체 생성
+        View.OnClickListener choosePictureListener = v -> { //클릭 이벤트 처리할 리스너 객체
             Intent intent = new Intent();
             int requestCode = -1;
-            switch (v.getId()) { //앨범에서 사진 선택해서 첨부
+            switch (v.getId()) { //앨범에서 사진 선택해서 첨부할 때
                 case R.id.album_button:
                     intent = new Intent(Intent.ACTION_PICK);
                     intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.CONTENT_TYPE);
                     requestCode = GET_PICTURE_FROM_ALBUM_REQUEST_CODE;
                     break;
-                case R.id.new_button: //새로 촬영해서 첨부
+                case R.id.new_button: //새로 촬영해서 첨부할 때
                     intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     requestCode = TAKE_A_PICTURE_REQUEST_CODE;
                     break;
-                case R.id.link_button: //외부 이미지 링크 첨부
+                case R.id.link_button: //외부 이미지 링크 첨부할 때
             }
             startActivityForResult(intent, requestCode);
         };
 
+        //버튼에 리스너 등록
         attachFromAlbumBtn.setOnClickListener(choosePictureListener);
         attachNewPictureBtn.setOnClickListener(choosePictureListener);
 
