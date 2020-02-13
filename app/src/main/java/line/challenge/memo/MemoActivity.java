@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -15,7 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemoActivity extends AppCompatActivity {
 
@@ -25,6 +30,9 @@ public class MemoActivity extends AppCompatActivity {
     Button attachNewPictureBtn;
     Button attachFromLinkBtn;
     ImageView imageView;
+    EditText title;
+    EditText memoText;
+    List<String> imageUrl = new ArrayList<>();
 
     static final int TAKE_A_PICTURE_REQUEST_CODE = 1000;
     static final int GET_PICTURE_FROM_ALBUM_REQUEST_CODE = 2000;
@@ -34,14 +42,15 @@ public class MemoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_memo);
         if (getSupportActionBar() != null) { //액션바 설정
-            getSupportActionBar().setTitle("");
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFFFD966));
+            //getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         attachFromAlbumBtn = findViewById(R.id.album_button);
         attachNewPictureBtn = findViewById(R.id.new_button);
         attachFromLinkBtn = findViewById(R.id.link_button);
         imageView = findViewById(R.id.image_view);
+        title = findViewById(R.id.memo_title);
+        memoText = findViewById(R.id.memo_text);
         dbHelper = new MemoDBHelper(this);
 
         View.OnClickListener choosePictureListener = v -> { //클릭 이벤트 처리할 리스너 객체
@@ -86,6 +95,7 @@ public class MemoActivity extends AppCompatActivity {
                 case GET_PICTURE_FROM_ALBUM_REQUEST_CODE:
                     Uri uri = data.getData();
                     imageView.setImageURI(uri);
+                    imageUrl.add(uri.toString());
             }
         }
     }
@@ -94,6 +104,17 @@ public class MemoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
+                db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put("title", title.getText().toString());
+                values.put("memo", memoText.getText().toString());
+                if(imageUrl.size() > 0) { //첨부된 이미지가 있다면
+                    values.put("hasImage", 1);
+                }
+                else {
+                    values.put("hasImage", 0);
+                }
+                db.insert("memos", null, values);
                 finish();
         }
         return super.onOptionsItemSelected(item);
