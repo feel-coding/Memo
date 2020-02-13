@@ -7,4 +7,9 @@
         android:id="@+id/action_save"
         android:title="@string/save"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/attach_picture"
+        android:title="@string/ic_attach"
+        android:icon="@drawable/ic_attach"
+        app:showAsAction="always"/>
 </menu>
