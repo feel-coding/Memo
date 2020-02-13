@@ -8,10 +8,13 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +67,7 @@ public class MemoActivity extends AppCompatActivity {
         dbHelper = new MemoDBHelper(this);
 
         View.OnClickListener choosePictureListener = v -> { //클릭 이벤트 처리할 리스너 객체
+            Log.d("testest", "리스너에 들어옴");
             Intent intent = new Intent();
             int requestCode = -1;
             switch (v.getId()) { //앨범에서 사진 선택해서 첨부할 때
@@ -67,14 +81,17 @@ public class MemoActivity extends AppCompatActivity {
                     requestCode = TAKE_A_PICTURE_REQUEST_CODE;
                     break;
                 case R.id.link_button: //외부 이미지 링크 첨부할 때
+                    Log.d("testest", "pressed");
+                    String imgUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
+                    Glide.with(this).load(imgUrl).into(imageView);
             }
-            startActivityForResult(intent, requestCode);
+            if(v.getId() != R.id.link_button) startActivityForResult(intent, requestCode);
         };
 
         //버튼에 리스너 등록
         attachFromAlbumBtn.setOnClickListener(choosePictureListener);
         attachNewPictureBtn.setOnClickListener(choosePictureListener);
-
+        attachFromLinkBtn.setOnClickListener(choosePictureListener);
     }
 
     @Override
@@ -108,13 +125,11 @@ public class MemoActivity extends AppCompatActivity {
                 ContentValues values = new ContentValues();
                 values.put("title", title.getText().toString());
                 values.put("memo", memoText.getText().toString());
-                if(imageUrl.size() > 0) { //첨부된 이미지가 있다면
+                if(imageUrl.size() > 0) //첨부된 이미지가 있다면
                     values.put("hasImage", 1);
-                }
-                else {
+                else
                     values.put("hasImage", 0);
-                }
-                db.insert("memos", null, values);
+                long id = db.insert("memos", null, values);
                 finish();
         }
         return super.onOptionsItemSelected(item);
