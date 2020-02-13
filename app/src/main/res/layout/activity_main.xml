@@ -38,9 +38,16 @@
         android:layout_height="wrap_content" />
 
     <EditText
+        android:id="@+id/memo_title"
+        android:hint="@string/title_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null" />
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:hint="@string/input_hint"
+        android:gravity="top"
         android:inputType="textMultiLine" />
 
 

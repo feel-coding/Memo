@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -30,13 +31,10 @@ public class MainActivity extends AppCompatActivity {
         attachNewPictureBtn = findViewById(R.id.new_button);
         attachFromLinkBtn = findViewById(R.id.link_button);
         imageView = findViewById(R.id.image_view);
-        attachFromAlbumBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        attachFromAlbumBtn.setOnClickListener(v -> {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, MediaStore.Images.Media.CONTENT_TYPE);
                 startActivityForResult(intent, GET_PICTURE_FROM_ALBUM_REQUEST_CODE);
-            }
         });
         attachNewPictureBtn.setOnClickListener(v -> {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -53,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
                     imageView.setImageBitmap(bitmap);
                     break;
                 case GET_PICTURE_FROM_ALBUM_REQUEST_CODE:
-                    String result = data.getDataString();
+                    Uri uri = data.getData();
+                    imageView.setImageURI(uri);
             }
         }
     }

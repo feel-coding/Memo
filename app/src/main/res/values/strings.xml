@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Memo</string>
+    <string name="title_hint">제목을 입력하세요</string>
     <string name="input_hint">메모를 입력하세요</string>
     <string name="from_gallery">사진 첨부</string>
     <string name="new_picture">사진 찍어서 첨부</string>
