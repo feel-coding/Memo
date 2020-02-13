@@ -5,4 +5,5 @@
     <string name="from_gallery">사진 첨부</string>
     <string name="new_picture">사진 찍어서 첨부</string>
     <string name="from_link">링크로 첨부</string>
+    <string name="save">저장</string>
 </resources>
