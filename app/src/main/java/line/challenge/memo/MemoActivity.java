@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -82,8 +84,37 @@ public class MemoActivity extends AppCompatActivity {
                     break;
                 case R.id.link_button: //외부 이미지 링크 첨부할 때
                     Log.d("testest", "pressed");
-                    String imgUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
-                    Glide.with(this).load(imgUrl).into(imageView);
+                    final EditText et = new EditText(this);
+
+                    final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.MyAlertDialogStyle);
+
+                    alt_bld.setTitle("URL로 외부 이미지 첨부")
+
+                            .setMessage("변경할 닉네임을 입력하세요")
+
+                            .setCancelable(false)
+
+                            .setView(et)
+
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    String value = et.getText().toString();
+
+                                    Log.d("linklink", value);
+
+                                }
+
+                            });
+
+                    AlertDialog alert = alt_bld.create();
+
+                    alert.show();
+
+
+                    //String imgUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
+                    //Glide.with(this).load(imgUrl).into(imageView);
             }
             if(v.getId() != R.id.link_button) startActivityForResult(intent, requestCode);
         };
