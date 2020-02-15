@@ -3,22 +3,31 @@ package line.challenge.memo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Menu;
@@ -40,6 +49,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.graphics.ImageDecoder.createSource;
 
 public class MemoActivity extends AppCompatActivity {
 
@@ -136,22 +147,39 @@ public class MemoActivity extends AppCompatActivity {
                 case TAKE_A_PICTURE_REQUEST_CODE:
                     Bitmap bitmap = (Bitmap) data.getExtras().get("data");
                     //imageView.setImageBitmap(bitmap);
-                    String text = memoText.getText().toString();
-                    SpannableString ss = new SpannableString(text);
-                    ImageSpan is = new ImageSpan(this, bitmap);
-                    ss.setSpan(is, text.length() - 1, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    memoText.setText(ss);
+                    String text = memoText.getText().toString() + "\nimg\n";
+                    SpannableStringBuilder builder = new SpannableStringBuilder(text);
+                    int start = text.indexOf("img");
+                    if(start > -1) {
+                        int end = start + "img".length();
+                        Drawable dr = new BitmapDrawable(bitmap);
+                        dr.setBounds(0, 0, dr.getIntrinsicWidth(), dr.getIntrinsicHeight());
+                        ImageSpan span = new ImageSpan(dr);
+                        builder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    memoText.setText(builder);
                     break;
                 case GET_PICTURE_FROM_ALBUM_REQUEST_CODE:
                     Uri uri = data.getData();
-                    //imageView.setImageURI(uri);
                     imageUrl.add(uri.toString());
-                    text = memoText.getText().toString();
-                    ss = new SpannableString(text);
-                    is = new ImageSpan(this, uri);
-                    ss.setSpan(is, text.length() - 1, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    memoText.setText(ss);
+                    text = memoText.getText().toString() + "\nimg\n";
+                    builder = new SpannableStringBuilder(text);
+                    start = text.indexOf("img");
+                    if(start > -1) {
+                        int end = start + "img".length();
+                        Drawable dr = Drawable.createFromPath(uri.getEncodedPath());
+                        /*if(Build.VERSION.SDK_INT >= 28) {
+                            try {
+                                dr = ImageDecoder.decodeDrawable(createSource(getContentResolver(), uri));
+                            } catch (IOException e) {
+                                System.out.println("drawable로 decode 하는 도중 IOException");
+                            }
+                        }*/
+                        dr.setBounds(0, 0, dr.getIntrinsicWidth(), dr.getIntrinsicHeight());
+                        ImageSpan span = new ImageSpan(dr);
+                        builder.setSpan(span, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    memoText.setText(builder);
             }
         }
     }
