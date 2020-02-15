@@ -150,6 +150,7 @@ public class MemoActivity extends AppCompatActivity {
                     ss = new SpannableString(text);
                     is = new ImageSpan(this, uri);
                     ss.setSpan(is, text.length() - 1, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                     memoText.setText(ss);
             }
         }
