@@ -1,3 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="row_height">100dp</dimen>
+    <dimen name="title_height">30dp</dimen>
+    <dimen name="memo_height">70dp</dimen>
 </resources>

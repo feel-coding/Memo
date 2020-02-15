@@ -111,8 +111,6 @@ public class MemoActivity extends AppCompatActivity {
                     AlertDialog alert = alt_bld.create();
 
                     alert.show();
-
-
                     //String imgUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
                     //Glide.with(this).load(imgUrl).into(imageView);
             }
