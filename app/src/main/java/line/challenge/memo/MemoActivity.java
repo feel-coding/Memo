@@ -12,10 +12,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,41 +90,36 @@ public class MemoActivity extends AppCompatActivity {
                     Log.d("testest", "pressed");
                     final EditText et = new EditText(this);
 
-                    final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this,R.style.MyAlertDialogStyle);
+                    final AlertDialog.Builder alt_bld = new AlertDialog.Builder(this, R.style.MyAlertDialogStyle);
 
                     alt_bld.setTitle("URL로 외부 이미지 첨부")
-
                             .setMessage("변경할 닉네임을 입력하세요")
-
                             .setCancelable(false)
-
                             .setView(et)
-
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int id) {
-
+                            .setPositiveButton("확인", (dialog, id) -> {
                                     String value = et.getText().toString();
-
-                                    Log.d("linklink", value);
+                                    Glide.with(MemoActivity.this).load(value).into(imageView);
+                                })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
                                 }
-
                             });
 
                     AlertDialog alert = alt_bld.create();
 
                     alert.show();
-                    //String imgUrl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory&fname=https://k.kakaocdn.net/dn/EShJF/btquPLT192D/SRxSvXqcWjHRTju3kHcOQK/img.png";
-                    //Glide.with(this).load(imgUrl).into(imageView);
             }
-            if(v.getId() != R.id.link_button) startActivityForResult(intent, requestCode);
+            if (v.getId() != R.id.link_button) startActivityForResult(intent, requestCode);
         };
 
         //버튼에 리스너 등록
         attachFromAlbumBtn.setOnClickListener(choosePictureListener);
         attachNewPictureBtn.setOnClickListener(choosePictureListener);
         attachFromLinkBtn.setOnClickListener(choosePictureListener);
+
+
     }
 
     @Override
@@ -136,12 +135,22 @@ public class MemoActivity extends AppCompatActivity {
             switch (requestCode) {
                 case TAKE_A_PICTURE_REQUEST_CODE:
                     Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-                    imageView.setImageBitmap(bitmap);
+                    //imageView.setImageBitmap(bitmap);
+                    String text = memoText.getText().toString();
+                    SpannableString ss = new SpannableString(text);
+                    ImageSpan is = new ImageSpan(this, bitmap);
+                    ss.setSpan(is, text.length() - 1, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    memoText.setText(ss);
                     break;
                 case GET_PICTURE_FROM_ALBUM_REQUEST_CODE:
                     Uri uri = data.getData();
-                    imageView.setImageURI(uri);
+                    //imageView.setImageURI(uri);
                     imageUrl.add(uri.toString());
+                    text = memoText.getText().toString();
+                    ss = new SpannableString(text);
+                    is = new ImageSpan(this, uri);
+                    ss.setSpan(is, text.length() - 1, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    memoText.setText(ss);
             }
         }
     }
@@ -149,12 +158,12 @@ public class MemoActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_save:
+            case R.id.action_save: //저장 버튼 눌렸을 때
                 db = dbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
                 values.put("title", title.getText().toString());
                 values.put("memo", memoText.getText().toString());
-                if(imageUrl.size() > 0) //첨부된 이미지가 있다면
+                if (imageUrl.size() > 0) //첨부된 이미지가 있다면
                     values.put("hasImage", 1);
                 else
                     values.put("hasImage", 0);
@@ -163,4 +172,5 @@ public class MemoActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -41,15 +41,22 @@
         android:id="@+id/memo_title"
         android:hint="@string/title_hint"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@null" />
-    <EditText
-        android:id="@+id/memo_text"
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:hint="@string/input_hint"
-        android:gravity="top"
-        android:inputType="textMultiLine" />
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/memo_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/input_hint"
+            android:gravity="top"
+            android:background="@null"
+            android:inputType="textMultiLine" />
+    </ScrollView>
+
 
 
 </LinearLayout>

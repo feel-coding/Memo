@@ -8,4 +8,5 @@
     <string name="save">저장</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="ic_attach">사진 첨부</string>
+    <string name="url_hint">첨부하고 싶은 이미지 URL을 입력하세요</string>
 </resources>
